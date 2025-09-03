@@ -43,3 +43,5 @@ prisma/migrations/
 *.db-journal
 *.sqlite
 *.sqlite-journal
+
+/app/generated/prisma
