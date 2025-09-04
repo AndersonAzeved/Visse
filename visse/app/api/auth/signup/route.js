@@ -9,16 +9,23 @@ export async function POST(request) {
   try {
     const { name, email, password } = await request.json()
 
+    // Validações
     if (!name || !email || !password) {
       return NextResponse.json(
-        { message: "Missing fields" },
+        { 
+          success: false,
+          message: "Nome, email e senha são obrigatórios" 
+        },
         { status: 400 }
       )
     }
 
     if (password.length < 6) {
       return NextResponse.json(
-        { message: "Password must be at least 6 characters" },
+        { 
+          success: false,
+          message: "Senha deve ter pelo menos 6 caracteres" 
+        },
         { status: 400 }
       )
     }
@@ -30,7 +37,10 @@ export async function POST(request) {
 
     if (existingUser) {
       return NextResponse.json(
-        { message: "User already exists" },
+        { 
+          success: false,
+          message: "Usuário já existe com este email" 
+        },
         { status: 400 }
       )
     }
@@ -44,23 +54,31 @@ export async function POST(request) {
         name,
         email,
         password: hashedPassword,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        createdAt: true
       }
     })
 
-    // Remove a senha da resposta
-    const { password: _, ...userWithoutPassword } = user
-
     return NextResponse.json(
       { 
-        message: "User created successfully",
-        user: userWithoutPassword
+        success: true,
+        message: "Usuário criado com sucesso",
+        data: user
       },
       { status: 201 }
     )
+
   } catch (error) {
     console.error("Signup error:", error)
     return NextResponse.json(
-      { message: "Internal server error" },
+      { 
+        success: false,
+        message: "Erro interno do servidor" 
+      },
       { status: 500 }
     )
   }

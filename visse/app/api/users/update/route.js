@@ -8,11 +8,12 @@ const prisma = new PrismaClient()
 
 export async function PUT(request) {
   try {
+    // Obtém a sessão do usuário autenticado
     const session = await getServerSession()
     
     if (!session?.user?.email) {
       return NextResponse.json(
-        { message: "Unauthorized" },
+        { success: false, message: "Não autenticado" },
         { status: 401 }
       )
     }
@@ -21,7 +22,7 @@ export async function PUT(request) {
 
     if (!name || !email) {
       return NextResponse.json(
-        { message: "Nome e email são obrigatórios" },
+        { success: false, message: "Nome e email são obrigatórios" },
         { status: 400 }
       )
     }
@@ -33,7 +34,7 @@ export async function PUT(request) {
 
     if (!currentUser) {
       return NextResponse.json(
-        { message: "Usuário não encontrado" },
+        { success: false, message: "Usuário não encontrado" },
         { status: 404 }
       )
     }
@@ -46,7 +47,7 @@ export async function PUT(request) {
 
       if (existingUser) {
         return NextResponse.json(
-          { message: "Este email já está em uso" },
+          { success: false, message: "Este email já está em uso" },
           { status: 400 }
         )
       }
@@ -62,14 +63,14 @@ export async function PUT(request) {
     if (newPassword) {
       if (!currentPassword) {
         return NextResponse.json(
-          { message: "Senha atual é obrigatória para alterar a senha" },
+          { success: false, message: "Senha atual é obrigatória para alterar a senha" },
           { status: 400 }
         )
       }
 
       if (newPassword.length < 6) {
         return NextResponse.json(
-          { message: "Nova senha deve ter pelo menos 6 caracteres" },
+          { success: false, message: "Nova senha deve ter pelo menos 6 caracteres" },
           { status: 400 }
         )
       }
@@ -83,7 +84,7 @@ export async function PUT(request) {
 
         if (!isCurrentPasswordValid) {
           return NextResponse.json(
-            { message: "Senha atual incorreta" },
+            { success: false, message: "Senha atual incorreta" },
             { status: 400 }
           )
         }
@@ -108,14 +109,15 @@ export async function PUT(request) {
     })
 
     return NextResponse.json({
+      success: true,
       message: "Perfil atualizado com sucesso",
-      user: updatedUser
+      data: updatedUser
     })
 
   } catch (error) {
     console.error("Update error:", error)
     return NextResponse.json(
-      { message: "Erro interno do servidor" },
+      { success: false, message: "Erro interno do servidor" },
       { status: 500 }
     )
   }

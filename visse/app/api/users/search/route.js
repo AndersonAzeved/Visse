@@ -9,10 +9,12 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url)
     const query = searchParams.get('q')
 
-    console.log("Search query:", query)
-
     if (!query || query.trim().length === 0) {
-      return NextResponse.json({ users: [] })
+      return NextResponse.json({ 
+        success: true,
+        data: [],
+        message: "Query de busca não fornecida"
+      })
     }
 
     const users = await prisma.user.findMany({
@@ -21,13 +23,13 @@ export async function GET(request) {
           {
             name: {
               contains: query,
-              //mode: 'insensitive'
+              mode: 'insensitive'
             }
           },
           {
             email: {
               contains: query,
-              //mode: 'insensitive'
+              mode: 'insensitive'
             }
           }
         ]
@@ -39,14 +41,27 @@ export async function GET(request) {
         image: true,
         createdAt: true
       },
-      take: 20 // Limita a 20 resultados
+      take: 20, // Limita a 20 resultados
+      orderBy: {
+        name: 'asc'
+      }
     })
 
-    return NextResponse.json({ users })
+    return NextResponse.json({ 
+      success: true,
+      data: users,
+      total: users.length,
+      query: query
+    })
+    
   } catch (error) {
     console.error("Search error:", error)
     return NextResponse.json(
-      { message: "Internal server error" },
+      { 
+        success: false, 
+        message: "Erro interno do servidor",
+        data: []
+      },
       { status: 500 }
     )
   }

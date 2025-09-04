@@ -1,18 +1,16 @@
 // app/layout.js
-import { SessionProvider } from './components/SessionProvider'
+import React from "react";
 
 export const metadata = {
-  title: 'Visse!',
-  description: 'Uma rede social nordestina',
+  title: 'VISSE!',
+  description: 'Rede social nordestina',
 }
 
 export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
       <body>
-        <SessionProvider>
-          {children}
-        </SessionProvider>
+        {children}
       </body>
     </html>
   )

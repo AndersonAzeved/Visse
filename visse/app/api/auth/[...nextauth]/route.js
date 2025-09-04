@@ -1,18 +1,13 @@
 // app/api/auth/[...nextauth]/route.js
 import NextAuth from "next-auth"
-import GoogleProvider from "next-auth/providers/google"
-import GitHubProvider from "next-auth/providers/github"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { PrismaClient } from "@prisma/client"
 import bcrypt from "bcryptjs"
 
 const prisma = new PrismaClient()
 
 const handler = NextAuth({
-  adapter: PrismaAdapter(prisma),
   providers: [
-    // Provider com Credentials (email/senha)
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -21,70 +16,73 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          return null
+          throw new Error("Email e senha são obrigatórios")
         }
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email
+        try {
+          const user = await prisma.user.findUnique({
+            where: {
+              email: credentials.email
+            }
+          })
+
+          if (!user || !user.password) {
+            throw new Error("Credenciais inválidas")
           }
-        })
 
-        if (!user || !user.password) {
-          return null
-        }
+          const isPasswordValid = await bcrypt.compare(
+            credentials.password,
+            user.password
+          )
 
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password,
-          user.password
-        )
+          if (!isPasswordValid) {
+            throw new Error("Credenciais inválidas")
+          }
 
-        if (!isPasswordValid) {
-          return null
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+          }
+        } catch (error) {
+          console.error("Auth error:", error)
+          throw new Error("Erro na autenticação")
         }
       }
-    }),
-
-    // Provider Google (opcional)
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
-
-    // Provider GitHub (opcional)
-    GitHubProvider({
-      clientId: process.env.GITHUB_ID,
-      clientSecret: process.env.GITHUB_SECRET,
     })
   ],
   session: {
     strategy: "jwt",
+    maxAge: 24 * 60 * 60, // 24 horas
   },
-  pages: {
-    signIn: "/auth/signin",
-    signUp: "/auth/signup",
+  jwt: {
+    maxAge: 24 * 60 * 60, // 24 horas
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
+        token.email = user.email
+        token.name = user.name
       }
       return token
     },
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id
+        session.user.email = token.email
+        session.user.name = token.name
       }
       return session
     },
   },
+  pages: {
+    // Remove páginas customizadas para usar apenas API
+    signIn: null,
+    signUp: null,
+  },
   secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === "development",
 })
 
 export { handler as GET, handler as POST }

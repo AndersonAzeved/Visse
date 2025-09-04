@@ -12,7 +12,7 @@ export async function DELETE(request) {
     
     if (!session?.user?.email) {
       return NextResponse.json(
-        { message: "Unauthorized" },
+        { success: false, message: "Não autenticado" },
         { status: 401 }
       )
     }
@@ -21,7 +21,7 @@ export async function DELETE(request) {
 
     if (!password) {
       return NextResponse.json(
-        { message: "Senha é obrigatória para deletar a conta" },
+        { success: false, message: "Senha é obrigatória para deletar a conta" },
         { status: 400 }
       )
     }
@@ -33,7 +33,7 @@ export async function DELETE(request) {
 
     if (!currentUser) {
       return NextResponse.json(
-        { message: "Usuário não encontrado" },
+        { success: false, message: "Usuário não encontrado" },
         { status: 404 }
       )
     }
@@ -47,14 +47,14 @@ export async function DELETE(request) {
 
       if (!isPasswordValid) {
         return NextResponse.json(
-          { message: "Senha incorreta" },
+          { success: false, message: "Senha incorreta" },
           { status: 400 }
         )
       }
     }
 
     // Deleta o usuário e suas sessões/contas relacionadas
-    await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx) => {
       // Deleta sessões
       await tx.session.deleteMany({
         where: { userId: currentUser.id }
@@ -66,19 +66,30 @@ export async function DELETE(request) {
       })
 
       // Deleta o usuário
-      await tx.user.delete({
-        where: { id: currentUser.id }
+      const deletedUser = await tx.user.delete({
+        where: { id: currentUser.id },
+        select: {
+          id: true,
+          name: true,
+          email: true
+        }
       })
+
+      return deletedUser
     })
 
     return NextResponse.json({
-      message: "Conta deletada com sucesso"
+      success: true,
+      message: "Conta deletada com sucesso",
+      data: {
+        deletedUser: result
+      }
     })
 
   } catch (error) {
     console.error("Delete error:", error)
     return NextResponse.json(
-      { message: "Erro interno do servidor" },
+      { success: false, message: "Erro interno do servidor" },
       { status: 500 }
     )
   }
