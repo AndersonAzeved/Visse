@@ -1,95 +1,85 @@
-"use client";
+// app/page.js
+'use client'
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react"
+import Link from "next/link"
 
 export default function Home() {
-  const [users, setUsers] = useState([]);
-  const [form, setForm] = useState({ name: "", email: "" });
-  const [search, setSearch] = useState("");
-  const router = useRouter();
-
-  // busca os usuários
-  const fetchUsers = () => {
-    fetch("/api/users")
-      .then((res) => res.json())
-      .then(setUsers);
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  // adicionar usuário
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const res = await fetch("/api/users", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    const newUser = await res.json();
-    setUsers([...users, newUser]); // atualiza lista
-    setForm({ name: "", email: "" });
-  };
-
-  // deletar usuário
-  const handleDelete = async (id) => {
-    await fetch(`/api/users?userId=${id}`, { method: "DELETE" });
-    setUsers(users.filter((u) => u.id !== id));
-  };
-
-  // filtrar usuários pelo search
-  const filteredUsers = users.filter(
-    (u) =>
-      u.name.toLowerCase().includes(search.toLowerCase()) ||
-      u.email.toLowerCase().includes(search.toLowerCase())
-  );
+  const { data: session } = useSession()
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>CRUD de Usuários</h1>
-
-      {/* Pesquisa */}
-      <input
-        type="text"
-        placeholder="Pesquisar usuário..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={{ marginBottom: "20px", width: "100%", padding: "5px" }}
-      />
-
-      {/* Formulário */}
-      <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
-        <input
-          type="text"
-          placeholder="Nome"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-          required
-        />
-        <button type="submit">Adicionar</button>
-      </form>
-
-      {/* Lista */}
-      <ul>
-        {filteredUsers.map((u) => (
-          <li key={u.id}>
-            {u.name} - {u.email}
-            <button onClick={() => router.push(`/edit/${u.id}`)}>Editar</button>
-            <button onClick={() => handleDelete(u.id)}>Deletar</button>
-          </li>
-        ))}
-      </ul>
-
-      {filteredUsers.length === 0 && <p>Nenhum usuário encontrado.</p>}
+    <div style={{ 
+      minHeight: "100vh", 
+      display: "flex", 
+      alignItems: "center", 
+      justifyContent: "center",
+      backgroundColor: "#f5f5f5" 
+    }}>
+      <div style={{
+        backgroundColor: "white",
+        padding: "3rem",
+        borderRadius: "8px",
+        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+        textAlign: "center",
+        maxWidth: "500px"
+      }}>
+        <h1 style={{ marginBottom: "2rem", color: "#333" }}>
+          Bem-vindo ao Projeto Next.js
+        </h1>
+        
+        {session ? (
+          <div>
+            <p style={{ marginBottom: "2rem", color: "#666" }}>
+              Olá, <strong>{session.user.name || session.user.email}</strong>!
+            </p>
+            <Link 
+              href="/dashboard"
+              style={{
+                backgroundColor: "#3b82f6",
+                color: "white",
+                padding: "0.75rem 1.5rem",
+                borderRadius: "4px",
+                textDecoration: "none",
+                display: "inline-block"
+              }}
+            >
+              Ir para Dashboard
+            </Link>
+          </div>
+        ) : (
+          <div>
+            <p style={{ marginBottom: "2rem", color: "#666" }}>
+              Sistema de autenticação com NextAuth
+            </p>
+            <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+              <Link 
+                href="/auth/signin"
+                style={{
+                  backgroundColor: "#3b82f6",
+                  color: "white",
+                  padding: "0.75rem 1.5rem",
+                  borderRadius: "4px",
+                  textDecoration: "none"
+                }}
+              >
+                Entrar
+              </Link>
+              <Link 
+                href="/auth/signup"
+                style={{
+                  backgroundColor: "#10b981",
+                  color: "white",
+                  padding: "0.75rem 1.5rem",
+                  borderRadius: "4px",
+                  textDecoration: "none"
+                }}
+              >
+                Criar Conta
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
-  );
+  )
 }
