@@ -1,0 +1,7 @@
+organization=andersonazeved
+projectKey=visse-nextjs-api
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.76733
+dashboardUrl=https://sonarcloud.io/dashboard?id=visse-nextjs-api
+ceTaskId=AZqw3flnlMKAGbezMGo_
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZqw3flnlMKAGbezMGo_
