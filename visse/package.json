@@ -14,7 +14,8 @@
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset --force",
     "test": "jest --watchAll",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "sonar": "sonar-scanner -Dsonar.organization=andersonazeved -Dsonar.projectKey=visse-nextjs-api -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=2d6f8b2ca3bda6d3a8cd892b324a4475a9b9f1f4 -Dsonar.sources=app -Dsonar.tests=__tests__ -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
   },
   "dependencies": {
     "@prisma/client": "^5.7.0",
