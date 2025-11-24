@@ -2,22 +2,22 @@
 
 # Guia de Testes
 
-## 📋 Endpoints Disponíveis
+## Endpoints Disponíveis
 
-### 🔐 Autenticação
+### Autenticação
 - **POST** `/api/auth/signup` - Registrar usuário
 - **GET** `/api/auth/session` - Obter sessão atual
 - **POST** `/api/auth/callback/credentials` - Login
 - **POST** `/api/auth/signout` - Logout
 
-### 👥 Usuários (CRUD)
+### Usuários (CRUD)
 - **GET** `/api/users/search?q=termo` - Buscar usuários
 - **PUT** `/api/users/update` - Atualizar perfil (requer auth)
 - **DELETE** `/api/users/delete` - Deletar conta (requer auth)
 
 ---
 
-## 🧪 Testes com cURL
+## Testes com cURL
 
 ### 1. Registrar Usuário
 ```bash
@@ -117,7 +117,7 @@ curl -X DELETE http://localhost:3000/api/users/delete \
 
 ---
 
-## 🔧 Configuração do Ambiente
+## Configuração do Ambiente
 
 ### 1. Instalar Dependências
 ```bash
@@ -144,7 +144,7 @@ npm run dev
 
 ---
 
-## 📊 Códigos de Status HTTP
+## Códigos de Status HTTP
 
 | Código | Significado |
 |--------|-------------|
@@ -157,7 +157,7 @@ npm run dev
 
 ---
 
-## 🔒 Padrão de Resposta da API
+## Padrão de Resposta da API
 
 ### Sucesso
 ```json
@@ -178,7 +178,7 @@ npm run dev
 
 ---
 
-## 🛠️ Ferramentas Recomendadas
+## Ferramentas Recomendadas
 
 - **Postman** - GUI para testes de API
 - **Insomnia** - Alternativa ao Postman
@@ -194,7 +194,7 @@ Acesse: http://localhost:5555
 
 ---
 
-## 🚦 Fluxo de Teste Completo
+## Fluxo de Teste Completo
 
 1. **Registrar usuário** → `POST /api/auth/signup`
 2. **Fazer login** → `POST /api/auth/callback/credentials`
@@ -203,5 +203,23 @@ Acesse: http://localhost:5555
 5. **Atualizar perfil** → `PUT /api/users/update`
 6. **Deletar conta** → `DELETE /api/users/delete`
 
+
 ---
 
+## Documentação de Qualidade e Testes
+
+Para garantir a robustez e confiabilidade do sistema Visse, foram aplicadas estratégias avançadas de testes e análise de código. Consulte a documentação detalhada abaixo:
+
+### Plano de Testes e Cobertura
+Detalhamento da estratégia de TDD utilizada, ferramentas (Jest) e os resultados finais de cobertura alcançados .
+* **[Acessar Plano de Testes](/visse/docs/tarefas/tarefa_03/plano_de_testes.md)**
+
+### Testes de Mutação
+Relatório sobre a eficácia dos testes unitários utilizando **StrykerJS**. Explica como os testes se comportaram diante de mutações no código.
+* **[Entender Testes de Mutação](/visse/docs/tarefas/tarefa_03/testes_mutacao.md)**
+
+### Manual de Execução
+Um guia passo a passo simplificado para quem deseja clonar o repositório, instalar as dependências e rodar todos os comandos do projeto.
+* **[Ver Manual de Execução](/visse/docs/tarefas/tarefa_03/MANUAL_DE_EXECUCAO.md)**
+
+---
