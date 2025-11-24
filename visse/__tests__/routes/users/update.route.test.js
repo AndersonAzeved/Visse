@@ -1,12 +1,8 @@
-// visse/__tests__/routes/users/update.route.test.js
 import { PUT } from "../../../app/api/users/update/route";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
-// ====================================================================
-// MOCK DO PRISMA CLIENT
-// Garante que o mock 'prisma' seja carregado de forma preguiçosa.
-// ====================================================================
+// Mock do Prisma Client
 jest.mock("@prisma/client", () => {
   const mockPrisma = require("../../../__mocks__/prisma");
   return {
@@ -14,7 +10,6 @@ jest.mock("@prisma/client", () => {
   };
 });
 const prisma = require("../../../__mocks__/prisma"); 
-// ====================================================================
 
 
 // Mock para simular getServerSession
@@ -56,7 +51,7 @@ describe("PUT /api/users/update", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     
-    // MOCK PADRÃO: Sessão autenticada (usado na maioria dos testes)
+    // MOCK PADRÃO: Sessão autenticada 
     mockGetServerSession.mockResolvedValue({
       user: { email: currentUser.email },
     });
@@ -71,9 +66,7 @@ describe("PUT /api/users/update", () => {
   });
 
 
-  // ===============================================
   // CAMINHOS DE FALHA
-  // ===============================================
 
   it("TDD-FAIL: deve retornar 401 se o usuário não estiver autenticado", async () => {
     mockGetServerSession.mockResolvedValueOnce(null);
@@ -185,10 +178,8 @@ describe("PUT /api/users/update", () => {
     expect(body.message).toBe("Senha atual incorreta");
   });
 
-  // ===============================================
-  // CAMINHOS DE SUCESSO
-  // ===============================================
 
+  // CAMINHOS DE SUCESSO
   it("TDD-SUCCESS: deve atualizar nome e email com sucesso (sem alterar senha)", async () => {
     const updatedUserData = {
       id: "user123",
@@ -203,10 +194,7 @@ describe("PUT /api/users/update", () => {
         email: "novo.email@email.com",
       }),
     };
-    
-    // Mocks Sequenciais (CORRIGIDO):
-    // 1. Busca o usuário atual (OK)
-    // 2. Busca o novo e-mail (OK, e-mail livre: null)
+
     prisma.user.findUnique
       .mockResolvedValueOnce(currentUser) 
       .mockResolvedValueOnce(null);       
@@ -241,9 +229,8 @@ describe("PUT /api/users/update", () => {
     expect(bcrypt.hash).toHaveBeenCalledWith("novaSenha789", 12);
   });
   
-  // ===============================================
-  // TESTE DE COBERTURA: COBRIR O CATCH (Linha 118)
-  // ===============================================
+
+  // TESTE DE COBERTURA
   it("TDD-COV: deve retornar 500 se ocorrer um erro interno do servidor (catch block)", async () => {
     // Mocks: Sessão OK. Mas a busca do usuário falha com exceção
     mockGetServerSession.mockResolvedValue({ user: { email: "usuario.atual@email.com" } });

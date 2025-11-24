@@ -1,0 +1,19 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "packageManager": "npm",
+  "reporters": ["html", "clear-text", "progress"],
+  "testRunner": "jest",
+  "testRunner_comment": "Configura o Jest para usar o arquivo de config existente",
+  "jest": {
+    "configFile": "jest.config.js",
+    "enableFindRelatedTests": false
+  },
+  "coverageAnalysis": "perTest",
+  "mutate": [
+    "app/api/users/update/route.js",
+    "app/api/users/delete/route.js",
+    "app/api/users/search/route.js",
+    "app/api/auth/signup/route.js"
+  ],
+  "ignoreStatic": true
+}

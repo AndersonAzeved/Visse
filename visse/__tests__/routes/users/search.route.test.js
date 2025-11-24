@@ -1,10 +1,6 @@
-// visse/__tests__/routes/users/search.route.test.js
 import { GET } from "../../../app/api/users/search/route";
 
-// ====================================================================
-// MOCK DO PRISMA CLIENT (Corrigido para evitar ReferenceError)
-// Usamos require() dentro da factory para garantir o escopo correto.
-// ====================================================================
+// Mock do Prisma Client
 jest.mock("@prisma/client", () => {
   const mockPrisma = require("../../../__mocks__/prisma");
   return {
@@ -12,7 +8,6 @@ jest.mock("@prisma/client", () => {
   };
 });
 const prisma = require("../../../__mocks__/prisma"); 
-// ====================================================================
 
 // MOCK ESTÁVEL DO NEXTRESPONSE
 const mockResponse = (body, status) => ({
@@ -40,7 +35,7 @@ describe("GET /api/users/search", () => {
   });
 
 
-  // TDD-FAIL: Deve retornar uma mensagem amigável se a query for vazia (Linha 14)
+  // TDD-FAIL: Deve retornar uma mensagem se a query for vazia
   it("deve retornar 200 e mensagem se a query 'q' não for fornecida", async () => {
     // Arrange: Simula uma URL sem o parâmetro 'q'
     const mockRequestNoQuery = {
@@ -58,7 +53,7 @@ describe("GET /api/users/search", () => {
     expect(prisma.user.findMany).not.toHaveBeenCalled(); 
   });
   
-  // TDD-SUCCESS: Deve retornar usuários com base na query (Caminho Feliz)
+  // TDD-SUCCESS: Deve retornar usuários com base na query
   it("deve retornar 200 e a lista de usuários com base na query", async () => {
     // Arrange: Simula uma URL com o parâmetro 'q'
     const mockRequestWithQuery = {
@@ -81,7 +76,7 @@ describe("GET /api/users/search", () => {
     expect(body.total).toBe(1);
     expect(body.query).toBe("joao");
     
-    // Verifica se o Prisma foi chamado corretamente com o OR (name E email) e limites
+    // Verifica se o Prisma foi chamado corretamente com o OR e limites
     expect(prisma.user.findMany).toHaveBeenCalledWith(expect.objectContaining({
         where: {
             OR: expect.arrayContaining([
@@ -93,7 +88,7 @@ describe("GET /api/users/search", () => {
     }));
   });
   
-  // TDD-COV: Deve cobrir o bloco catch (Erro Interno)
+  // TDD-COV: Deve cobrir o bloco catch
   it("deve retornar 500 se ocorrer um erro interno do servidor (catch block)", async () => {
     // Arrange: Força uma exceção no Prisma
     prisma.user.findMany.mockRejectedValue(new Error("Erro de conexão"));

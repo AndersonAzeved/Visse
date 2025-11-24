@@ -1,11 +1,8 @@
-// visse/__tests__/routes/auth/signup.route.test.js
 import { POST } from "../../../app/api/auth/signup/route";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
-// ====================================================================
-// MOCK DO PRISMA CLIENT
-// ====================================================================
+// Mock do Prisma Client
 jest.mock("@prisma/client", () => {
   const mockPrisma = require("../../../__mocks__/prisma");
   return {
@@ -13,7 +10,6 @@ jest.mock("@prisma/client", () => {
   };
 });
 const prisma = require("../../../__mocks__/prisma"); 
-// ====================================================================
 
 // MOCK ESTÁVEL DO NEXTRESPONSE
 const mockResponse = (body, status) => ({
@@ -130,7 +126,7 @@ describe("POST /api/auth/signup", () => {
     expect(prisma.user.create).not.toHaveBeenCalled();
   });
 
-  // TDD-COV: Deve cobrir o bloco catch (Erro Interno)
+  // TDD-COV: Deve cobrir o bloco catch
   it("deve retornar 500 se ocorrer um erro interno do servidor (catch block)", async () => {
     // Arrange: Força uma exceção no Prisma
     prisma.user.findUnique.mockRejectedValue(new Error("Erro de conexão"));

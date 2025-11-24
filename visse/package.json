@@ -15,7 +15,8 @@
     "db:reset": "prisma migrate reset --force",
     "test": "jest --watchAll",
     "coverage": "jest --coverage",
-    "sonar": "sonar-scanner -Dsonar.organization=andersonazeved -Dsonar.projectKey=visse -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=2d6f8b2ca3bda6d3a8cd892b324a4475a9b9f1f4 -Dsonar.sources=app -Dsonar.tests=__tests__ -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info"
+    "sonar": "sonar-scanner -Dsonar.organization=andersonazeved -Dsonar.projectKey=visse -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=2d6f8b2ca3bda6d3a8cd892b324a4475a9b9f1f4 -Dsonar.sources=app -Dsonar.tests=__tests__ -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info",
+    "mutation": "stryker run"
   },
   "dependencies": {
     "@prisma/client": "^5.7.0",
@@ -30,6 +31,8 @@
     "@babel/preset-env": "^7.28.5",
     "@babel/preset-react": "^7.27.1",
     "@jest/globals": "^30.1.2",
+    "@stryker-mutator/core": "^9.4.0",
+    "@stryker-mutator/jest-runner": "^9.4.0",
     "@testing-library/jest-dom": "^6.8.0",
     "@types/node": "24.3.1",
     "@types/react": "19.1.12",

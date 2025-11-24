@@ -1,12 +1,8 @@
-// visse/__tests__/routes/users/delete.route.test.js
 import { DELETE } from "../../../app/api/users/delete/route";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
-// ====================================================================
-// MOCK DO PRISMA CLIENT
-// Garante que o mock 'prisma' seja carregado de forma preguiçosa.
-// ====================================================================
+// Mock do Prisma Client
 jest.mock("@prisma/client", () => {
   const mockPrisma = require("../../../__mocks__/prisma");
   return {
@@ -14,7 +10,6 @@ jest.mock("@prisma/client", () => {
   };
 });
 const prisma = require("../../../__mocks__/prisma"); 
-// ====================================================================
 
 
 // Mock para simular getServerSession
@@ -89,9 +84,7 @@ describe("DELETE /api/users/delete", () => {
   });
 
 
-  // ===============================================
   // CAMINHOS DE FALHA (TESTES TDD)
-  // ===============================================
 
   it("TDD-FAIL: deve retornar 401 se o usuário não estiver autenticado", async () => {
     mockGetServerSession.mockResolvedValueOnce(null);
@@ -135,9 +128,8 @@ describe("DELETE /api/users/delete", () => {
     expect(prisma.$transaction).not.toHaveBeenCalled();
   });
 
-  // ===============================================
+ 
   // CAMINHOS DE SUCESSO (TESTES TDD)
-  // ===============================================
 
   it("TDD-SUCCESS: deve deletar o usuário e retornar 200", async () => {
     const response = await DELETE(mockRequest);
@@ -154,9 +146,8 @@ describe("DELETE /api/users/delete", () => {
     expect(prisma.user.delete).toHaveBeenCalled();
   });
 
-  // ===============================================
-  // TESTE DE COBERTURA: COBRIR O CATCH (Linha 83)
-  // ===============================================
+  
+  // TESTE DE COBERTURA
   it("TDD-COV: deve retornar 500 se ocorrer um erro interno do servidor", async () => {
     // Simula um erro na busca do usuário
     prisma.user.findUnique.mockRejectedValue(new Error("Erro de transação"));
