@@ -45,3 +45,6 @@ prisma/migrations/
 *.sqlite-journal
 
 /app/generated/prisma
+
+# StrykerJS
+.stryker-tmp
