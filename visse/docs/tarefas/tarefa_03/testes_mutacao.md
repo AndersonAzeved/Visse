@@ -15,3 +15,4 @@ Testes de mutação (Mutation Testing) são uma técnica avançada de teste de s
 
 Para este projeto, utilizamos o [StrykerJS](https://stryker-mutator.io/), a ferramenta líder para testes de mutação em JavaScript/Node.js.
 
+
