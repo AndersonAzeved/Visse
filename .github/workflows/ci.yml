@@ -11,7 +11,7 @@ jobs:
     name: Build, Test & Analyze
     runs-on: ubuntu-latest
 
-    # Define a pasta 'visse' como padrão para todos os comandos 'run' (npm install, etc)
+    # Define a pasta 'visse' como padrão para todos os comandos 'run'
     defaults:
       run:
         working-directory: ./visse
@@ -20,18 +20,20 @@ jobs:
       - name: Checkout do Código
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Importante para o SonarCloud
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-          # Importante: Diz ao setup-node onde está o package-lock.json
           cache-dependency-path: visse/package-lock.json
 
       - name: Instalar Dependências
         run: npm install
+
+      - name: Gerar Prisma Client
+        run: npx prisma generate
 
       - name: Executar Cobertura de Testes (Jest)
         run: npm run coverage
@@ -39,7 +41,7 @@ jobs:
       - name: Análise do SonarCloud
         uses: SonarSource/sonarcloud-github-action@master
         with:
-          # Importante: Diz ao SonarScanner para rodar dentro da pasta 'visse'
+          # Aponta para a pasta onde está o sonar-project.properties
           projectBaseDir: visse
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
